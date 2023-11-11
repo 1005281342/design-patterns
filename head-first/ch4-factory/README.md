@@ -60,3 +60,91 @@ namespace sample_pizza_factory {
 ```
 
 ![](../imgs/ch4-factory/简单工厂.png)
+
+## 工厂方法
+
+工厂方法模式定义了一个创建对象的接口，但由子类决定要实例化哪个类。工厂方法让类把实例化推迟到子类。
+
+### plantuml
+
+```plantuml
+@startuml
+legend
+<u><b>Legend</b></u>
+Render Aggregations: true
+Render Fields: true
+Render Methods: true
+Private Aggregations: true
+end legend
+namespace pizza {
+    class ChicagoStyleCheesePizza << (S,Aquamarine) >> {
+        + Cut() 
+
+    }
+    class NYStyleCheesePizza << (S,Aquamarine) >> {
+    }
+    interface Pizza  {
+        + Prepare() 
+        + Bake() 
+        + Cut() 
+        + Box() 
+        + GetName() string
+
+    }
+    class Type << (S,Aquamarine) >> {
+        + String() string
+
+    }
+    class pizza << (S,Aquamarine) >> {
+        - name string
+        - dough string
+        - sauce string
+        - toppings []string
+
+        + Prepare() 
+        + Bake() 
+        + Cut() 
+        + Box() 
+        + GetName() string
+
+    }
+    class pizza.CreatePizzaFactory << (T, #FF7700) >>  {
+    }
+    class pizza.Type << (T, #FF7700) >>  {
+    }
+}
+"pizza.pizza" *-- "extends""pizza.ChicagoStyleCheesePizza"
+"pizza.pizza" *-- "extends""pizza.NYStyleCheesePizza"
+
+"pizza.Pizza" <|-- "implements""pizza.pizza"
+
+
+namespace pizzastore {
+    class ChicagoPizzaStore << (S,Aquamarine) >> {
+    }
+    class NYPizzaStore << (S,Aquamarine) >> {
+    }
+    interface PizzaStore  {
+        + OrderPizza(menu string) (pizza.Pizza, error)
+
+    }
+    class pizzaStore << (S,Aquamarine) >> {
+        - createPizza pizza.CreatePizzaFactory
+
+        + OrderPizza(menu string) (pizza.Pizza, error)
+
+    }
+}
+"pizzastore.pizzaStore" *-- "extends""pizzastore.ChicagoPizzaStore"
+"pizzastore.pizzaStore" *-- "extends""pizzastore.NYPizzaStore"
+
+"pizzastore.PizzaStore" <|-- "implements""pizzastore.pizzaStore"
+
+"pizzastore.pizzaStore""uses" o-- "pizza.CreatePizzaFactory"
+
+"__builtin__.string" #.. "alias of""pizza.Type"
+"pizza.<font color=blue>func</font>(string) (Pizza, error)" #.. "alias of""pizza.CreatePizzaFactory"
+@enduml
+```
+
+![](../imgs/ch4-factory/工厂方法.png)
