@@ -23,6 +23,8 @@ func (s *StateSold) TurnCrank() {
 
 func (s *StateSold) Dispense() {
 	s.machine.count--
+	fmt.Println("糖果已发放")
+
 	if s.machine.count == 0 {
 		fmt.Println("糖果已售罄")
 		s.machine.state = s.machine.soldOutState

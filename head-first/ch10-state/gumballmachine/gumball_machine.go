@@ -16,7 +16,12 @@ func NewGumballMachine(count int) *GumballMachine {
 	gm.noQuarterState = &StateNoQuarter{machine: gm}
 	gm.hasQuarterState = &StateHasQuarter{machine: gm}
 	gm.soldState = &StateSold{machine: gm}
+
 	gm.state = gm.noQuarterState
+	if gm.count <= 0 {
+		gm.state = gm.soldOutState
+	}
+
 	return gm
 }
 
@@ -26,6 +31,7 @@ func (g *GumballMachine) InsertQuarter() {
 
 func (g *GumballMachine) TurnCrank() {
 	g.state.TurnCrank()
+	g.state.Dispense()
 }
 
 func (g *GumballMachine) EjectQuarter() {
