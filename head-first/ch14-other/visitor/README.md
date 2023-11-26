@@ -51,3 +51,5 @@ namespace healthconscious {
 
 @enduml
 ```
+
+![](../../imgs/ch14-other/visitor/访问者模式.png)
