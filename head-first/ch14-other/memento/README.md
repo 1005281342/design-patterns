@@ -39,3 +39,5 @@ namespace game {
 
 @enduml
 ```
+
+![](../../imgs/ch14-other/memento/备忘录模式.png)
