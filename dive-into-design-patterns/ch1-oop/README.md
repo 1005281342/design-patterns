@@ -400,3 +400,76 @@ namespace animal {
 @enduml
 ```
 
+## 对象之间的关系
+
+### 依赖
+
+如果修改一个类的定义可能会造成另一个类的变化，那么这两个类之间就存在**依赖**关系。
+
+当你在代码中使用具体类的名称时，通常意味着存在依赖关系。
+
+（UML 图不会展示所有依赖，它们在真实代码中数量太多了）
+
+![](../imgs/ch1-oop/dependency/教授依赖课程资料.png)
+
+### 关联
+
+关联是一个对象使用另一个对象或与另一个对象进行交互的关系。
+
+（双向关联也是可以的，使用双向箭头表示）
+
+![](../imgs/ch1-oop/related/教授和学生交流.png)
+
+```go
+//dive-into-design-patterns/ch1-oop/related/professor.go
+package related
+
+type Knowledge interface{}
+
+type Course interface {
+	GetKnowledge() Knowledge
+}
+
+type Student interface {
+	Remember(knowledge Knowledge)
+}
+
+type Professor struct {
+	student Student
+}
+
+func (p *Professor) Teach(c Course) {
+	p.student.Remember(c.GetKnowledge())
+}
+```
+
+`Teach` 方法接受一个课程 `Course` 参数。如果有人修改了 `Course` 的 `GetKnowledge` 方法（修改方法名或添加一些必须的参数等），代码会崩溃。【这就是依赖关系】
+
+（如果必须要新增参数，在 go 语言中可以通过可变参数来向前兼容）
+
+对于 `Student` 的成员变量，在 `Teach` 方法中使用了它的 `Remember` 方法，如果 `Remember` 方法被修改（修改方法名或添加一些必须的参数等），也将会造成代码崩溃，但由于 `Professor` 的所有方法都能够访问到 `Student` 成员变量，所以 `Student` 就不仅是依赖，也是**关联**了。
+
+**关联**是一种特殊的依赖，关联关系中一个对象总是拥有访问与其交互的对象的权限，而简单的依赖关系并不会在对象间建立永久性的联系。
+
+### 聚合
+
+聚合是一种特殊类型的关联，用于表示对象间的“一对多”、“多对多”或“整体对部分”的关系。
+
+![](../imgs/ch1-oop/aggregation/院系包含教授.png)
+
+### 组合
+
+组合是一种特殊类型的聚合，其中一个对象由一个或者多个其他对象实例构成。
+
+![](../imgs/ch1-oop/combo/大学由院系构成.png)
+
+## 总结
+
+![](../imgs/ch1-oop/img.png)
+
+- 依赖：对类 B 进行修改（变更方法或新增入参等）会影响到类 A。
+- 关联：对象 A 知道对象 B。类 A 依赖于类 B。
+- 聚合：对象 A 知道对象 B 且由 B 构成。类 A 依赖于类 B。
+- 组合：对象 A 知道对象 B、由 B 构成而且管理着 B 的生命周期。类 A 依赖于类 B。
+- 实现：类 A 定义的方法由接口 B 声明。对象 A 可被视为对象 B。类 A 依赖类 B。
+- 继承：类 A 继承类 B 的接口和实现，但是可以对其进行扩展。对象 A 可被视为对象 B，类 A 依赖于类 B。
